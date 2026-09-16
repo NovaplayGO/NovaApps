@@ -1,0 +1,68 @@
+name: Update App Data
+
+on:
+
+  repository_dispatch:
+    types: [on-app-update]
+  workflow_dispatch:
+
+concurrency:
+  group: novaapps-sync
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Collect Metadata
+        env:
+          GH_TOKEN: ${{ secrets.ADMIN_TOKEN }}
+        run: |
+          get_info() {
+            local repo=$1
+            local path=$2
+            local json_url=$3
+            
+            # Obtener TamaÃ±o y Fecha usando el API de GitHub con Token
+            local file_data=$(curl -sH "Authorization: token $GH_TOKEN" "https://api.github.com/repos/$repo/contents/$path")
+            local size_bytes=$(echo "$file_data" | jq -r '.size // 0')
+            local size_mb=$(echo "scale=1; $size_bytes / 1048576" | bc)
+            
+            local commit_data=$(curl -sH "Authorization: token $GH_TOKEN" "https://api.github.com/repos/$repo/commits?path=$path&per_page=1")
+            local date_raw=$(echo "$commit_data" | jq -r '.[0].commit.committer.date // ""')
+            
+            # Obtener VersiÃ³n del JSON (usando el Token para repos privados)
+            local version="..."
+            if [ ! -z "$json_url" ]; then
+              # Extraer repo y path de la URL raw para usar el API y el Token
+              # Ejemplo: https://raw.githubusercontent.com/user/repo/main/file.json
+              local j_user=$(echo "$json_url" | cut -d'/' -f4)
+              local j_repo=$(echo "$json_url" | cut -d'/' -f5)
+              local j_path=$(echo "$j_url" | cut -d'/' -f7-)
+              
+              # Intentar obtener versiÃƒÂ³n. Si falla, intentar curl directo.
+              version=$(curl -sH "Authorization: token $GH_TOKEN" "$json_url" | jq -r '.version // .versionName // "..."')
+            fi
+            
+            echo "{\"version\": \"$version\", \"size\": \"$size_mb MB\", \"date\": \"$date_raw\"}"
+          }
+
+          STABLE=$(get_info "novaplaytv/updater" "apks/novaplay.apk" "https://raw.githubusercontent.com/NovaplayGO/updater/main/json/updatestable.json")
+          BETA=$(get_info "novaplaytv/updater" "apks/novaplaybeta.apk" "https://raw.githubusercontent.com/NovaplayGO/updater/main/json/updatebeta.json")
+          KILLER=$(get_info "novaplaytv/OtherProyects" "killertv/killertv.apk" "https://raw.githubusercontent.com/NovaplayGO/OtherProyects/main/killertv/updates.json")
+
+          # Generar JSON vÃ¡lido sin codecs
+          echo "{\"stable\":$STABLE, \"beta\":$BETA, \"killer\":$KILLER}" > app_data.json
+
+      - name: Commit and Push
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "NovaApps Bot"
+          git add app_data.json
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Update: SincronizaciÃ³n automÃƒÂ¡tica de metadatos [skip ci]" && (git push || (git pull --rebase && git push)))

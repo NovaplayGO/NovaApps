@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NOVAPLAY | CENTRO DE DESCARGAS</title>
+    <link rel="icon" type="image/webp" href="https://raw.githubusercontent.com/NovaplayGO/novaimg/main/novasplash.webp">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #e50914;
+            --primary-hover: #ff000d;
+            --bg: #050505;
+            --card-bg: #111111;
+            --text: #ffffff;
+            --text-muted: #888888;
+            --border: rgba(255,255,255,0.05);
+            --nav-height: 70px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Background Effects */
+        .glow {
+            position: fixed;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% -20%, rgba(229, 9, 20, 0.15) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Navegación Premium */
+        .nova-nav { position: fixed; top: 0; width: 100%; z-index: 10000; background: rgba(0,0,0,0.7); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.05); transition: 0.3s; }
+        .nav-inner { max-width: 1400px; margin: auto; height: 70px; padding: 0 30px; display: flex; align-items: center; justify-content: space-between; }
+        .nav-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: #fff; font-weight: 900; font-size: 22px; letter-spacing: -1px; z-index: 10001; }
+        .nav-brand img { width: 36px; height: 32px; border-radius: 8px; }
+
+        .nav-links { display: flex; gap: 15px; align-items: center; }
+        .nav-links a { color: #ccc; text-decoration: none; font-size: 14px; font-weight: 600; transition: 0.2s; padding: 10px 15px; border-radius: 10px; }
+        .nav-links a:hover { color: #fff; background: rgba(255,255,255,0.05); }
+        .nav-links a.active { color: var(--primary); }
+
+        /* Main */
+        main {
+            max-width: 1100px;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        header h1 {
+            font-size: clamp(32px, 5vw, 48px);
+            font-weight: 900;
+            margin-bottom: 15px;
+            letter-spacing: -1.5px;
+        }
+        header p {
+            color: var(--text-muted);
+            font-size: 18px;
+        }
+
+        /* Grid */
+        .app-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+        }
+
+        .app-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+        .app-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+        .app-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(229, 9, 20, 0.05), transparent);
+            transform: translateX(-100%);
+            transition: 0.6s;
+        }
+        .app-card:hover::before { transform: translateX(100%); }
+
+        .app-icon {
+            width: 80px;
+            height: 80px;
+            background: #000;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin-bottom: 25px;
+            border: 1px solid var(--border);
+        }
+        .app-icon.stable { color: #4caf50; }
+        .app-icon.beta { color: #ff9800; }
+        .app-icon.killer { color: var(--primary); }
+        .app-icon.codecs { color: #2196f3; }
+
+        .app-title { font-size: 24px; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.5px; }
+        .app-tag {
+            font-size: 10px;
+            font-weight: 900;
+            text-transform: uppercase;
+            background: rgba(255,255,255,0.05);
+            padding: 4px 10px;
+            border-radius: 20px;
+            color: var(--text-muted);
+            width: fit-content;
+            margin-bottom: 20px;
+        }
+
+        .info-list {
+            margin-bottom: 30px;
+            flex-grow: 1;
+        }
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+        }
+        .info-item span:first-child { color: var(--text-muted); font-weight: 500; }
+        .info-item span:last-child { color: #fff; font-weight: 700; }
+
+        .btn-dl {
+            background: #fff;
+            color: #000;
+            text-decoration: none;
+            padding: 18px;
+            border-radius: 20px;
+            font-weight: 800;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: 0.3s;
+        }
+        .btn-dl:hover {
+            background: var(--primary);
+            color: #fff;
+            transform: scale(1.02);
+        }
+        .btn-dl i { font-size: 18px; }
+
+        footer { padding: 60px 20px; background: #000; border-top: 1px solid rgba(255,255,255,0.05); text-align: center; }
+        .footer-text { font-size: 13px; color: #444; line-height: 1.8; font-weight: 600; }
+
+        @media (max-width: 600px) {
+            .app-grid { grid-template-columns: 1fr; }
+            main { margin: 40px auto; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="glow"></div>
+
+<nav class="nova-nav">
+    <div class="nav-inner">
+        <a class="nav-brand" href="https://novaplaygo.github.io/">
+            <img src="https://raw.githubusercontent.com/NovaplayGO/novaimg/main/novasplash.webp" alt="Logo">
+            NOVAPLAY | CENTRO DE DESCARGAS
+        </a>
+        <div class="nav-links" id="navLinks">
+            <a href="https://novaplaygo.github.io/" class="active" id="nav-home" style="color: var(--primary); font-weight: 800;">INICIO</a>
+        </div>
+    </div>
+</nav>
+
+<main>
+    <header>
+        <h1>Accede a las últimas versiones oficiales de nuestro ecosistema.</h1>
+        <p id="last-sync" style="font-size: 10px; margin-top: 10px; opacity: 0.5;"></p>
+    </header>
+
+    <div class="app-grid">
+        <!-- NovaPlay Stable -->
+        <div class="app-card">
+            <div class="app-icon stable"><i class="fas fa-play"></i></div>
+            <div class="app-tag">Versión Estable</div>
+            <h2 class="app-title">NovaPlay</h2>
+            <p style="font-size: 13px; color: var(--text-muted); line-height: 1.5; margin-bottom: 25px; text-align: justify;">
+                NovaPlay es la solución definitiva de entretenimiento digital, ofreciendo una infraestructura de streaming de alta fidelidad optimizada para la máxima estabilidad. Disfruta de un ecosistema privado diseñado para ofrecer fluidez absoluta en cualquier dispositivo.
+            </p>
+            <div class="info-list">
+                <div class="info-item"><span>Versión</span> <span id="stable-v">...</span></div>
+                <div class="info-item"><span>Fecha</span> <span id="stable-date">...</span></div>
+                <div class="info-item"><span>Tamaño</span> <span id="stable-size">...</span></div>
+            </div>
+            <a href="https://github.com/NovaplayGO/updater/raw/main/apks/novaplay.apk" class="btn-dl">
+                <i class="fas fa-download"></i> DESCARGAR APK
+            </a>
+        </div>
+
+        <!-- NovaPlay Beta -->
+        <div class="app-card">
+            <div class="app-icon beta"><i class="fas fa-flask"></i></div>
+            <div class="app-tag">Acceso Anticipado</div>
+            <h2 class="app-title">NovaPlay Beta</h2>
+            <p style="font-size: 13px; color: var(--text-muted); line-height: 1.5; margin-bottom: 25px; text-align: justify;">
+                NovaPlay es la solución definitiva de entretenimiento digital, ofreciendo una infraestructura de streaming de alta fidelidad optimizada para la máxima estabilidad. Disfruta de un ecosistema privado diseñado para ofrecer fluidez absoluta en cualquier dispositivo.
+            </p>
+            <div class="info-list">
+                <div class="info-item"><span>Versión</span> <span id="beta-v">...</span></div>
+                <div class="info-item"><span>Fecha</span> <span id="beta-date">...</span></div>
+                <div class="info-item"><span>Tamaño</span> <span id="beta-size">...</span></div>
+            </div>
+            <a href="https://github.com/NovaplayGO/updater/raw/main/apks/novaplaybeta.apk" class="btn-dl">
+                <i class="fas fa-download"></i> DESCARGAR APK
+            </a>
+        </div>
+
+    </div>
+</main>
+
+<footer>
+    <div class="footer-text">
+        © 2026 NOVAPLAY TV<br>
+        © 2010 - 2026 - NOVAPLAY TV. TODOS LOS DERECHOS RESERVADOS
+    </div>
+</footer>
+
+<script>
+    const CONNECTOR_URL = "https://mrghnngupolsgatcmevw.supabase.co/functions/v1/access_connector";
+    const APP_USER = "novaplay";
+
+    async function fetchSafeData(action, isBeta = false) {
+        try {
+            // Handshake para obtener credenciales
+            const authRes = await fetch(CONNECTOR_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: "obtener_credenciales", usuario: APP_USER })
+            });
+            const credentials = await authRes.json();
+            const authHeader = "Basic " + btoa(`${APP_USER}:${credentials.password}`);
+
+            // Obtener datos reales
+            const dataRes = await fetch(CONNECTOR_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': authHeader
+                },
+                body: JSON.stringify({ action: action, beta: isBeta, t: Date.now() })
+            });
+            return await dataRes.json();
+        } catch (e) {
+            console.error("Error cargando metadatos:", e);
+            return null;
+        }
+    }
+
+    async function init() {
+        const [stable, beta] = await Promise.all([
+            fetchSafeData("obtener_actualizacion", false),
+            fetchSafeData("obtener_actualizacion", true)
+        ]);
+
+        const updateUI = (id, data) => {
+            if (!data) return;
+            
+            // FASE REPARACIÓN (v143): Detectar si la data viene envuelta en .json
+            const realData = data.json || data;
+
+            document.getElementById(`${id}-v`).innerText = realData.version || '...';
+            document.getElementById(`${id}-size`).innerText = realData.size || '...';
+            
+            if (realData.date) {
+                try {
+                    const date = new Date(realData.date);
+                    document.getElementById(`${id}-date`).innerText = date.toLocaleDateString('es-ES', {
+                        day: '2-digit', month: 'short', year: 'numeric'
+                    });
+                } catch (e) {
+                    document.getElementById(`${id}-date`).innerText = realData.date;
+                }
+            } else {
+                // Fallback si la fecha no viene en el JSON
+                document.getElementById(`${id}-date`).innerText = "Reciente";
+            }
+        };
+
+        updateUI('stable', stable);
+        updateUI('beta', beta);
+        document.getElementById('last-sync').innerText = "Sincronización: " + new Date().toLocaleTimeString();
+    }
+
+    init();
+</script>
+
+</body>
+</html>
