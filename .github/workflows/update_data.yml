@@ -29,7 +29,7 @@ jobs:
             local path=$2
             local json_url=$3
             
-            # Obtener TamaÃ±o y Fecha usando el API de GitHub con Token
+            # Obtener Tamaño y Fecha usando el API de GitHub con Token
             local file_data=$(curl -sH "Authorization: token $GH_TOKEN" "https://api.github.com/repos/$repo/contents/$path")
             local size_bytes=$(echo "$file_data" | jq -r '.size // 0')
             local size_mb=$(echo "scale=1; $size_bytes / 1048576" | bc)
@@ -37,7 +37,7 @@ jobs:
             local commit_data=$(curl -sH "Authorization: token $GH_TOKEN" "https://api.github.com/repos/$repo/commits?path=$path&per_page=1")
             local date_raw=$(echo "$commit_data" | jq -r '.[0].commit.committer.date // ""')
             
-            # Obtener VersiÃ³n del JSON (usando el Token para repos privados)
+            # Obtener Versión del JSON (usando el Token para repos privados)
             local version="..."
             if [ ! -z "$json_url" ]; then
               # Extraer repo y path de la URL raw para usar el API y el Token
@@ -57,7 +57,7 @@ jobs:
           BETA=$(get_info "NovaplayGO/updater" "apks/novaplaybeta.apk" "https://raw.githubusercontent.com/novaplaygo/updater/main/json/updatebeta.json")
           KILLER=$(get_info "NovaplayGO/OtherProyects" "killertv/killertv.apk" "https://raw.githubusercontent.com/novaplaygo/OtherProyects/main/killertv/updates.json")
 
-          # Generar JSON vÃ¡lido sin codecs
+          # Generar JSON válido sin codecs
           echo "{\"stable\":$STABLE, \"beta\":$BETA, \"killer\":$KILLER}" > app_data.json
 
       - name: Commit and Push
@@ -65,4 +65,4 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "NovaApps Bot"
           git add app_data.json
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Update: SincronizaciÃ³n automÃƒÂ¡tica de metadatos [skip ci]" && (git push || (git pull --rebase && git push)))
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Update: Sincronización automÃƒ¡tica de metadatos [skip ci]" && (git push || (git pull --rebase && git push)))
