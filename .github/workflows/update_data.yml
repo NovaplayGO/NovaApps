@@ -55,7 +55,7 @@ jobs:
 
           STABLE=$(get_info "NovaplayGO/updater" "apks/novaplay.apk" "https://raw.githubusercontent.com/novaplaygo/updater/main/json/updatestable.json")
           BETA=$(get_info "NovaplayGO/updater" "apks/novaplaybeta.apk" "https://raw.githubusercontent.com/novaplaygo/updater/main/json/updatebeta.json")
-          KILLER=$(get_info "NovaplayGO/OtherProyects" "killertv/killertv.apk" "https://raw.githubusercontent.com/novaplaygo/OtherProyects/main/killertv/updates.json")
+          KILLER=$(get_info "NovaplayGO/updater" "json/ms_aux/killerplay.apk" "https://raw.githubusercontent.com/novaplaygo/updater/main/json/ms_aux/updateplay.json")
 
           # Generar JSON válido sin codecs
           echo "{\"stable\":$STABLE, \"beta\":$BETA, \"killer\":$KILLER}" > app_data.json
