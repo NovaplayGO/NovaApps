@@ -304,38 +304,36 @@
     }
 
     async function init() {
-        const [stable, beta] = await Promise.all([
-            fetchSafeData("obtener_actualizacion", false),
-            fetchSafeData("obtener_actualizacion", true)
-        ]);
+        try {
+            const res = await fetch("app_data.json?t=" + Date.now());
+            const appData = await res.json();
 
-        const updateUI = (id, data) => {
-            if (!data) return;
-            
-            // FASE REPARACIÓN (v143): Detectar si la data viene envuelta en .json
-            const realData = data.json || data;
-
-            document.getElementById(`${id}-v`).innerText = realData.version || '...';
-            document.getElementById(`${id}-size`).innerText = realData.size || '...';
-            
-            if (realData.date) {
-                try {
-                    const date = new Date(realData.date);
-                    document.getElementById(`${id}-date`).innerText = date.toLocaleDateString('es-ES', {
-                        day: '2-digit', month: 'short', year: 'numeric'
-                    });
-                } catch (e) {
-                    document.getElementById(`${id}-date`).innerText = realData.date;
+            const updateUI = (id, realData) => {
+                if (!realData) return;
+                document.getElementById(`${id}-v`).innerText = realData.version || '...';
+                document.getElementById(`${id}-size`).innerText = realData.size || '...';
+                if (realData.date) {
+                    try {
+                        const date = new Date(realData.date);
+                        document.getElementById(`${id}-date`).innerText = date.toLocaleDateString('es-ES', {
+                            day: '2-digit', month: 'short', year: 'numeric'
+                        });
+                    } catch (e) {
+                        document.getElementById(`${id}-date`).innerText = realData.date;
+                    }
+                } else {
+                    document.getElementById(`${id}-date`).innerText = "Reciente";
                 }
-            } else {
-                // Fallback si la fecha no viene en el JSON
-                document.getElementById(`${id}-date`).innerText = "Reciente";
-            }
-        };
+            };
 
-        updateUI('stable', stable);
-        updateUI('beta', beta);
-        document.getElementById('last-sync').innerText = "Sincronización: " + new Date().toLocaleTimeString();
+            if (appData.stable) updateUI('stable', appData.stable);
+            if (appData.beta) updateUI('beta', appData.beta);
+            if (appData.killer) updateUI('killer', appData.killer);
+
+            document.getElementById('last-sync').innerText = "Sincronización: " + new Date().toLocaleTimeString();
+        } catch (e) {
+            console.error("Error cargando app_data.json:", e);
+        }
     }
 
     init();
