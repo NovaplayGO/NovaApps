@@ -1,1 +1,17 @@
-{"stable":{"version": "5.3.5", "size": "17.7 MB", "date": "2026-11-14T14:12:17Z"}, "beta":{"version": "5.3.5", "size": "17.7 MB", "date": "2026-11-14T13:59:08Z"}, "killer":{"version": "1.8.3", "size": "4.9 MB", "date": "2026-11-11T10:22:03Z"}}
+{
+  "stable": {
+    "version": "5.3.5",
+    "size": "17.8 MB",
+    "date": "2026-11-14T14:29:36.919Z"
+  },
+  "beta": {
+    "version": "5.3.5",
+    "size": "17.8 MB",
+    "date": "2026-11-14T15:07:17Z"
+  },
+  "killer": {
+    "version": "1.8.3",
+    "size": "4,9 MB",
+    "date": "2026-11-11T10:24:22.803Z"
+  }
+}
